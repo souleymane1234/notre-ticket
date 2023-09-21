@@ -19,12 +19,8 @@ import {
   ImageBackground,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {StoriesComponent} from '../../components/storiesComponent';
-import {TopBoxComponent} from '../../components/topBoxComponent';
-import {storiesData} from '../../donnee/storiesData';
-import {topBoxData} from '../../donnee/topBoxData';
-import VideoPlayer from 'react-native-video-player';
 import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
+import {EventComponent} from '../../components/eventComponent';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -32,7 +28,7 @@ const heightVideo = Dimensions.get('window').height / 2.6;
 const heightStotiesVideo = Dimensions.get('window').height / 1.2;
 
 const HomeScreen = ({navigation, route}) => {
-  // const { id, Token, Data } = route.params;
+  // const {id, Token, Data} = route.params
   const [home, setHome] = useState(true);
   // for home start
   const [event, setEvent] = useState(true);
@@ -44,9 +40,52 @@ const HomeScreen = ({navigation, route}) => {
   const [ticket, setTicket] = useState(false);
   const [profil, setProfil] = useState(false);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [AllEvent, setAllEvent] = useState();
 
-  //  console.log("data........", Data)
-  // All cinema
+  console.log('ma data........', AllEvent);
+  // All event
+  useEffect(() => {
+    var myHeaders = new Headers();
+    myHeaders.append('Cache-Control', 'no-cache');
+    myHeaders.append('Accept', '*/*');
+    myHeaders.append('Accept-Encoding', 'gzip, deflate');
+    myHeaders.append('Connection', 'keep-alive');
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    };
+
+    fetch('https://pleasant-shirt-bass.cyclic.app/api/allEvent', requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        setAllEvent(result[0]);
+      })
+      .catch(error => console.log('error', error));
+  }, []);
+
+  const renderItemsEvent = ({item}) => {
+    return (
+      <TouchableHighlight
+        // onPress={() =>
+        //   navigation.navigate('DetailEvenement', {
+        //     idEvent: item._id,
+        //     DataEvent: item,
+        //     idUser: id,
+        //   })
+        // }
+        underlayColor="none">
+        <EventComponent
+          DataEvent={item}
+          idEvent={item._id}
+          nom={item.nom}
+          image={item.image}
+          prixStandart={item.prixStandart}
+        />
+      </TouchableHighlight>
+    );
+  };
 
   const BottomBar = (
     <View
@@ -193,171 +232,13 @@ const HomeScreen = ({navigation, route}) => {
               <Text style={[styles.blue]}>Voir tout</Text>
             </TouchableOpacity>
           </View>
-          <ScrollView horizontal style={{top: 10}}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('DetailEvenement')}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                }}>
-                <View
-                  style={{
-                    top: '5%',
-                    position: 'absolute',
-                    zIndex: 1,
-                    backgroundColor: '#aecbd7',
-                    borderRadius: 5,
-                    width: 35,
-                    marginHorizontal: 10,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                      color: '#597797',
-                      textAlign: 'center',
-                    }}>
-                    17 {'\n'} DEC
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 4,
-                    },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 4.65,
-
-                    elevation: 8,
-                    width: 150,
-                    height: 140,
-                    borderRadius: 10,
-                  }}>
-                  <Image
-                    source={require('../../assets/concert.jpeg')}
-                    resizeMode="contain"
-                    style={{
-                      justifyContent: 'center',
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: 10,
-                    }}
-                  />
-                </View>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginHorizontal: 10,
-                }}>
-                <View
-                  style={{
-                    top: '5%',
-                    position: 'absolute',
-                    zIndex: 1,
-                    backgroundColor: '#aecbd7',
-                    borderRadius: 5,
-                    width: 35,
-                    marginHorizontal: 10,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                      color: '#597797',
-                      textAlign: 'center',
-                    }}>
-                    17 {'\n'} DEC
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 4,
-                    },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 4.65,
-
-                    elevation: 8,
-                    width: 150,
-                    height: 140,
-                    borderRadius: 10,
-                  }}>
-                  <Image
-                    source={require('../../assets/magic.jpg')}
-                    resizeMode="contain"
-                    style={{
-                      justifyContent: 'center',
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: 10,
-                    }}
-                  />
-                </View>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <View
-                style={{
-                  flexDirection: 'row',
-                }}>
-                <View
-                  style={{
-                    top: '5%',
-                    position: 'absolute',
-                    zIndex: 1,
-                    backgroundColor: '#aecbd7',
-                    borderRadius: 5,
-                    width: 35,
-                    marginHorizontal: 10,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                      color: '#597797',
-                      textAlign: 'center',
-                    }}>
-                    17 {'\n'} DEC
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 4,
-                    },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 4.65,
-
-                    elevation: 8,
-                    width: 150,
-                    height: 140,
-                    borderRadius: 10,
-                  }}>
-                  <Image
-                    source={require('../../assets/fally.jpg')}
-                    resizeMode="contain"
-                    style={{
-                      justifyContent: 'center',
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: 10,
-                    }}
-                  />
-                </View>
-              </View>
-            </TouchableOpacity>
-          </ScrollView>
+          <FlatList
+            style={{}}
+            horizontal={true}
+            data={AllEvent}
+            keyExtractor={item => item._id.toString()}
+            renderItem={renderItemsEvent}
+          />
         </View>
         {/* event populaire end  */}
         {/* recommander start  */}
@@ -728,11 +609,11 @@ const HomeScreen = ({navigation, route}) => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             width: '100%',
+            alignSelf: 'center',
             margin: 10,
-            marginHorizontal: 0,
           }}>
           {event == true ? (
-            <View style={{margin: 10}}>
+            <View style={{}}>
               <TouchableOpacity
                 style={styles.menuActif}
                 onPress={() => {
@@ -753,7 +634,7 @@ const HomeScreen = ({navigation, route}) => {
               <Text style={styles.menuText}>Event</Text>
             </View>
           ) : (
-            <View style={{margin: 10}}>
+            <View style={{}}>
               <TouchableOpacity
                 style={styles.menuNoActif}
                 onPress={() => {
@@ -777,7 +658,7 @@ const HomeScreen = ({navigation, route}) => {
 
           {/* Historique */}
           {cinema == true ? (
-            <View style={{margin: 10}}>
+            <View style={{}}>
               <TouchableOpacity
                 style={styles.menuActif}
                 onPress={() => {
@@ -798,7 +679,7 @@ const HomeScreen = ({navigation, route}) => {
               <Text style={styles.menuText}>Cinéma</Text>
             </View>
           ) : (
-            <View style={{margin: 10}}>
+            <View style={{}}>
               <TouchableOpacity
                 style={styles.menuNoActif}
                 onPress={() => {
@@ -820,7 +701,7 @@ const HomeScreen = ({navigation, route}) => {
             </View>
           )}
           {transport == true ? (
-            <View style={{margin: 10}}>
+            <View style={{}}>
               <TouchableOpacity
                 style={styles.menuActif}
                 onPress={() => {
@@ -841,7 +722,7 @@ const HomeScreen = ({navigation, route}) => {
               <Text style={styles.menuText}>Transport</Text>
             </View>
           ) : (
-            <View style={{margin: 10}}>
+            <View style={{}}>
               <TouchableOpacity
                 style={styles.menuNoActif}
                 onPress={() => {
@@ -863,7 +744,7 @@ const HomeScreen = ({navigation, route}) => {
             </View>
           )}
           {sport == true ? (
-            <View style={{margin: 10}}>
+            <View style={{}}>
               <TouchableOpacity
                 style={styles.menuActif}
                 onPress={() => {
@@ -884,7 +765,7 @@ const HomeScreen = ({navigation, route}) => {
               <Text style={styles.menuText}>Sport</Text>
             </View>
           ) : (
-            <View style={{margin: 10}}>
+            <View style={{}}>
               <TouchableOpacity
                 style={styles.menuNoActif}
                 onPress={() => {
@@ -906,7 +787,7 @@ const HomeScreen = ({navigation, route}) => {
             </View>
           )}
           {loisirs == true ? (
-            <View style={{margin: 10}}>
+            <View style={{}}>
               <TouchableOpacity
                 style={styles.menuActif}
                 onPress={() => {
@@ -927,7 +808,7 @@ const HomeScreen = ({navigation, route}) => {
               <Text style={styles.menuText}>Loisirs</Text>
             </View>
           ) : (
-            <View style={{margin: 10}}>
+            <View style={{}}>
               <TouchableOpacity
                 style={styles.menuNoActif}
                 onPress={() => {
@@ -949,30 +830,6 @@ const HomeScreen = ({navigation, route}) => {
             </View>
           )}
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 40,
-            width: '90%',
-            paddingLeft: 10,
-            borderRadius: 20,
-            marginBottom: 15,
-            backgroundColor: '#fff',
-            alignSelf: 'center',
-            marginBottom: 10,
-          }}>
-          <Icon
-            name="magnify"
-            size={20}
-            color="#1b3065"
-            style={{alignSelf: 'center', margin: 10, fontWeight: 'bold'}}
-          />
-          <TextInput
-            keyboardAppearance="dark"
-            keyboardType="email-address"
-            placeholder="Que rechercher vous ?"
-          />
-        </View>
       </View>
       {/* header end  */}
       <View style={{height: windowHeight, flex: 3}}>
@@ -993,8 +850,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
-    flex: 1,
+    flex: 0.5,
     backgroundColor: '#1b3065',
+    justifyContent: 'center',
   },
   headerView: {
     justifyContent: 'center',

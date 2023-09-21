@@ -26,8 +26,7 @@ export default function Login({navigation}) {
   const [myData, setMyData] = useState();
 
   const sendData = () => {
-    setSpinner(!Spinner);
-    fetch('https://pleasant-shirt-bass.cyclic.app/api/signin', {
+    fetch('http://localhost:5000/api/signin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -39,35 +38,12 @@ export default function Login({navigation}) {
     })
       .then(res => res.json())
       .then(data => {
-        setSpinner(!Spinner);
-        if (data) {
-          setSpinner(false);
-          setMyData(data);
-          navigation.navigate('HomeScreen', {
-            id: data.user._id,
-            Token: data.token,
-            Data: data,
-          });
-          setSpinner(false);
-        } else {
-          setSpinner(false);
-          Alert.alert(
-            'Identifiants incorrects',
-            'Nom d’utilisateur ou mot de passe incorrect',
-          );
-        }
-        console.log('Patience');
+        console.log('Patience', data);
       })
       .catch(error => {
-        setSpinner(false);
-        Alert.alert(
-          'Identifiants incorrects',
-          'Nom d’utilisateur ou mot de passe incorrect',
-        );
         console.log('Notre erreur ', error);
       });
   };
-
   const Loader = (
     <OrientationLoadingOverlay
       visible={Spinner}
@@ -79,7 +55,7 @@ export default function Login({navigation}) {
   );
   return (
     <ScrollView>
-      {/* {Loader} */}
+      {Loader}
       <View style={styles.container}>
         <StatusBar animated={true} backgroundColor="#12222e" />
         <View>
@@ -153,9 +129,9 @@ export default function Login({navigation}) {
           </TouchableOpacity>
 
           <TouchableOpacity
-            // onPress={() => sendData()}
+            onPress={() => sendData()}
             // onPress={() => navigation.navigate('HomeScreen')}
-            onPress={() => navigation.navigate('HomeScreen')}
+            // onPress={() => navigation.navigate('HomeScreen')}
             style={[styles.btnLogin, styles.row, styles.justifyCenter]}>
             <Text style={[{color: '#fff'}]}>Connexion</Text>
           </TouchableOpacity>
